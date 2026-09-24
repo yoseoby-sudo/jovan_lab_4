@@ -9,25 +9,33 @@ def load_inventory():
         with open("inventory.txt", "r") as file:
             lines = file.readlines()
 
+            #Check if the file is empty
+            if not lines:
+                return 0, []
+            
             #First line is the total inventory
             inventory = int(lines[0].strip())
+
+            #Second line is the number of deliveries
+            deliveries = int(lines[1].strip())
 
             #Remaining lines are the inventory history
             inventory_history = []
 
-            for line in lines[1:]:
+            for line in lines[2:]:
                 inventory_history.append(int(line.strip()))
 
-            return inventory, inventory_history
+            return inventory, deliveries, inventory_history
 
     except FileNotFoundError:
         #If the file does not exist, start with empty inventory and history
-        return 0, []
+        return 0, 0, []
 
-def save_inventory(total, history):
+def save_inventory(total, deliveries, history):
     #Save the inventory total and inventory history
     with open("inventory.txt", "w") as file:
         file.write(f"{total}\n")
+        file.write(f"{deliveries}\n")
 
         for inventory_amount in history:
             file.write(f"{inventory_amount}\n")
@@ -68,9 +76,10 @@ def generate_report(total_units, failed_attempts):
     print(f"Total Deliveries Processed: {deliveries}")
     print(f"Total Inventory Entered: {total_units}")
     print(f"Number of Failed/Rejected Entries: {failed_attempts}")
+    print(f"Inventory History: {inventory_history}")
 
 #Main program
-inventory, inventory_history = load_inventory()
+inventory, deliveries, inventory_history = load_inventory()
 
 print("Welcome to inventory taking")
 print(f"Current Inventory: {inventory}")
@@ -82,7 +91,7 @@ while True:
 
     #Check for quit signal
     if quantity == "quit":
-        save_inventory(inventory, inventory_history)
+        save_inventory(inventory, deliveries, inventory_history)
         break
 
     #Check for failed/rejected input
@@ -108,9 +117,8 @@ while True:
     #Add the valid transaction to the history list
     inventory_history.append(quantity)  
 
-
     print(f"Delivery: {quantity}")
     print(f"Tax: {tax:.2f}")
 
-
+#Generate Final Report
 generate_report(inventory, rejected)
