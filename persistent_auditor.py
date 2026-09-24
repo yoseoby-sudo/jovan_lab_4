@@ -4,15 +4,33 @@ deliveries = 0
 inventory_history = []
 
 def load_inventory():
-    # Load the previous inventory from inventory.txt
+    #Load the inventory total and history from inventory.txt
     try:
         with open("inventory.txt", "r") as file:
-            inventory = int(file.readline().strip())
-            return inventory
+            lines = file.readlines()
+
+            #First line is the total inventory
+            inventory = int(lines[0].strip())
+
+            #Remaining lines are the inventory history
+            inventory_history = []
+
+            for line in lines[1:]:
+                inventory_history.append(int(line.strip()))
+
+            return inventory, inventory_history
 
     except FileNotFoundError:
-        # If the file does not exist, start with 0 inventory
-        return 0
+        #If the file does not exist, start with empty inventory and history
+        return 0, []
+
+def save_inventory(total, history):
+    #Save the inventory total and inventory history
+    with open("inventory.txt", "w") as file:
+        file.write(f"{total}\n")
+
+        for inventory_amount in history:
+            file.write(f"{inventory_amount}\n")
     
 def get_valid_input():
     #Prompt the user and return a valid integer or 'quit'
@@ -50,13 +68,13 @@ def generate_report(total_units, failed_attempts):
     print(f"Total Deliveries Processed: {deliveries}")
     print(f"Total Inventory Entered: {total_units}")
     print(f"Number of Failed/Rejected Entries: {failed_attempts}")
-    print(f"Transaction History: {inventory_history}")
 
 #Main program
-inventory = load_inventory()
+inventory, inventory_history = load_inventory()
 
 print("Welcome to inventory taking")
 print(f"Current Inventory: {inventory}")
+print(f"Inventory History: {inventory_history}")
 
 while True:
 
@@ -64,6 +82,7 @@ while True:
 
     #Check for quit signal
     if quantity == "quit":
+        save_inventory(inventory, inventory_history)
         break
 
     #Check for failed/rejected input
@@ -86,8 +105,9 @@ while True:
     inventory = new_inventory
     deliveries += 1
 
-    # Add the valid transaction to the history list
-    inventory_history.append(quantity)
+    #Add the valid transaction to the history list
+    inventory_history.append(quantity)  
+
 
     print(f"Delivery: {quantity}")
     print(f"Tax: {tax:.2f}")
