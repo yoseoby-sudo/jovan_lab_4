@@ -1,6 +1,7 @@
 inventory = 0
 rejected = 0
 deliveries = 0
+inventory_history = []
 
 def load_inventory():
     # Load the previous inventory from inventory.txt
@@ -49,6 +50,7 @@ def generate_report(total_units, failed_attempts):
     print(f"Total Deliveries Processed: {deliveries}")
     print(f"Total Inventory Entered: {total_units}")
     print(f"Number of Failed/Rejected Entries: {failed_attempts}")
+    print(f"Transaction History: {inventory_history}")
 
 #Main program
 inventory = load_inventory()
@@ -83,6 +85,9 @@ while True:
     #Update inventory and delivery counter
     inventory = new_inventory
     deliveries += 1
+
+    # Add the valid transaction to the history list
+    inventory_history.append(quantity)
 
     print(f"Delivery: {quantity}")
     print(f"Tax: {tax:.2f}")
