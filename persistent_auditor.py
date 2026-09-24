@@ -11,7 +11,7 @@ def load_inventory():
 
             #Check if the file is empty
             if not lines:
-                return 0, []
+                return 0, 0, []
             
             #First line is the total inventory
             inventory = int(lines[0].strip())
@@ -31,13 +31,13 @@ def load_inventory():
         #If the file does not exist, start with empty inventory and history
         return 0, 0, []
 
-def save_inventory(total, deliveries, history):
+def save_inventory(total, deliveries, inventory_history):
     #Save the inventory total and inventory history
     with open("inventory.txt", "w") as file:
         file.write(f"{total}\n")
         file.write(f"{deliveries}\n")
 
-        for inventory_amount in history:
+        for inventory_amount in inventory_history:
             file.write(f"{inventory_amount}\n")
     
 def get_valid_input():
