@@ -1,5 +1,6 @@
-12
-6
+13
+7
 1001|Mouse|3
 1002|Keyboard|4
 1003|Mousepad|3
+1004|Headphones|1
